@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/api")) {
     const allowedOrigins = [
       "http://localhost:3000",
-      "https://your-real-vercel-name.vercel.app", // 🔥 replace this
+      "https://ai-chat-bot-sigma-seven.vercel.app/login", // 🔥 replace this
     ];
 
     const response = NextResponse.next();
