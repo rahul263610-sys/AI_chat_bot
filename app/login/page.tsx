@@ -40,9 +40,12 @@ export default function LoginPage() {
           autoClose: 3000,
         });
 
-        setTimeout(() => {
-          router.replace(res.role === "Admin" ? "/admin" : "/chat");
-        }, 300);
+     router.replace(
+      res.role === "Admin"
+        ? "/admin/dashboard"
+        : "/chat"
+    );
+
       } catch (err: any) {
         const message =
           typeof err === "string"
@@ -102,11 +105,11 @@ export default function LoginPage() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      router.replace(user.role === "Admin" ? "/admin/dashboard" : "/chat");
-    }
-  }, [user, router]);
+  // useEffect(() => {
+  //   if (user) {
+  //     router.replace(user.role === "Admin" ? "/admin/dashboard" : "/chat");
+  //   }
+  // }, [user, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
