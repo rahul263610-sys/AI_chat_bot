@@ -60,6 +60,7 @@ export const logoutUser = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       await axios.post("/auth/logout");
+      localStorage.removeItem("nextauth.message");
       return null;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

@@ -7,7 +7,6 @@ import { fetchSingleChat } from "@/redux/slices/chatSlice";
 import { SidebarData } from "../helper/config/sidebarData";
 import { useRole } from "@/hooks/useRole";
 import UserProfileDropdown from "@/components/UserProfileDropdown";
-import { useAuth } from "@/hooks/useAuth";
 interface SidebarProps {
   chats?: any[];
   activeChat?: any;

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser, registerUser, getCurrentUser } from "@/redux/slices/authSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { toast } from "react-toastify";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,9 +30,6 @@ export default function LoginPage() {
         const res = await dispatch(
           loginUser({ email, password })
         ).unwrap();
-
-        // Fetch fresh user data after login
-        await dispatch(getCurrentUser());
 
         toast.update(toastId, {
           render: "Logged in successfully ✅",
@@ -104,12 +102,6 @@ export default function LoginPage() {
       });
     }
   };
-
-  // useEffect(() => {
-  //   if (user) {
-  //     router.replace(user.role === "Admin" ? "/admin/dashboard" : "/chat");
-  //   }
-  // }, [user, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
@@ -242,6 +234,11 @@ export default function LoginPage() {
                 </div>
                 <button
                   type="button"
+                  onClick={() =>
+                    signIn("google", {
+                      callbackUrl: "/api/auth/googleLogin",
+                    })
+                  }
                   className="cursor-pointer w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 bg-white text-black hover:shadow-md transition-all"
                 >
                   <img

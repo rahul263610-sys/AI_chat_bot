@@ -6,11 +6,14 @@ import Sidebar from "@/components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "@/redux/store";
 import { fetchChats, setActiveChat, createChat } from "@/redux/slices/chatSlice";
+import { getCurrentUser } from "@/redux/slices/authSlice";
+import { useRole } from "@/hooks/useRole";
+import Loader from "@/components/ui/Loader";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
   const { chats, activeChat } = useSelector((state: RootState) => state.chat);
-
+  const role = useRole();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -20,8 +23,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     dispatch(fetchChats());
+    dispatch(getCurrentUser());
   }, [dispatch]);
-
+  if(!role){
+    return <Loader />
+  }
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-black text-white">
       <Header isOpen={isOpen} setIsOpen={setIsOpen} createChat={() => dispatch(createChat())}/>
