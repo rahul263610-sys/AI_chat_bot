@@ -37,13 +37,28 @@ export const createChat = createAsyncThunk("chat/createChat", async () => {
   return res.data;
 });
 
+// export const sendMessage = createAsyncThunk(
+//   "chat/sendMessage",
+//   async ({ chatId, message }: { chatId: string; message: string }) => {
+//     const res = await axiosInstance.post(`/chat/${chatId}`, { message });
+//     return res.data;
+//   }
+// );
 export const sendMessage = createAsyncThunk(
   "chat/sendMessage",
   async ({ chatId, message }: { chatId: string; message: string }) => {
-    const res = await axiosInstance.post(`/chat/${chatId}`, { message });
+    const res = await axiosInstance.post(
+      `https://hoseless-municipally-jennifer.ngrok-free.dev/api/chat/${chatId}`,
+      { message },
+      {
+        withCredentials: true, // important for cookies
+      }
+    );
+
     return res.data;
   }
 );
+
 
 export const fetchSingleChat = createAsyncThunk(
   "chat/fetchSingleChat",
