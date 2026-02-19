@@ -2,15 +2,15 @@
 
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
-import { useEffect } from "react";
-import { getCurrentUser } from "@/redux/slices/authSlice";
+// import { useEffect } from "react";
+// import { getCurrentUser } from "@/redux/slices/authSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function InitAuth({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    store.dispatch(getCurrentUser());
-  }, []);
+  // useEffect(() => {
+  //   store.dispatch(getCurrentUser());
+  // }, []);
 
   return <>{children}</>;
 }

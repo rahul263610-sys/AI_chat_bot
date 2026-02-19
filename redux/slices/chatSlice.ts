@@ -48,7 +48,7 @@ export const sendMessage = createAsyncThunk(
   "chat/sendMessage",
   async ({ chatId, message }: { chatId: string; message: string }) => {
     const res = await axiosInstance.post(
-      `https://hoseless-municipally-jennifer.ngrok-free.dev/api/chat/${chatId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/chat/${chatId}`,
       { message },
       {
         withCredentials: true, // important for cookies
