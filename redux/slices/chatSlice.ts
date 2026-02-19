@@ -51,7 +51,7 @@ export const sendMessage = createAsyncThunk(
       `${process.env.NEXT_PUBLIC_API_URL}/chat/${chatId}`,
       { message },
       {
-        withCredentials: true, // important for cookies
+        withCredentials: true,
       }
     );
 
