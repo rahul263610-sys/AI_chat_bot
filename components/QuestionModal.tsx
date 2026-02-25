@@ -22,7 +22,7 @@ export default function QuestionModal({ open, onClose, title, questions, loading
             <h3 className="text-lg font-semibold text-gray-900 truncate max-w-[60vw]" title={typeof title === 'string' ? title : undefined}>{title}</h3>
             <p className="text-sm text-gray-500 truncate max-w-[60vw]">Questions for this chat</p>
           </div>
-          <button onClick={onClose} aria-label="Close questions" className="inline-flex items-center justify-center w-9 h-9 rounded-md text-gray-600 hover:bg-gray-100">✕</button>
+          <button onClick={onClose} aria-label="Close questions" className="cursor-pointer inline-flex items-center justify-center w-9 h-9 rounded-md text-gray-600 hover:bg-gray-100">✕</button>
         </div>
 
         <div className="px-6 py-4 bg-gray-50">
@@ -44,7 +44,7 @@ export default function QuestionModal({ open, onClose, title, questions, loading
         </div>
 
         <div className="px-6 py-3 bg-white border-t flex justify-end">
-          <button onClick={onClose} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Close</button>
+          <button onClick={onClose} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer">Close</button>
         </div>
       </div>
     </div>

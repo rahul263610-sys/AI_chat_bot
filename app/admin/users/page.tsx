@@ -13,9 +13,11 @@ import Pagination from "@/components/Pagination";
 import HistoryModal from "@/components/HistoryModal";
 import QuestionModal from "@/components/QuestionModal";
 import { fetchChatQuestions } from "@/redux/slices/chatSlice";
+import { useMode } from "@/hooks/useMode";
 
 export default function UsersPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const mode = useMode();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -46,10 +48,12 @@ export default function UsersPage() {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
   return (
-    <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen">
+    <div className={`p-4 sm:p-6 md:p-8 min-h-screen ${
+      mode === "dark" ? "bg-gray-900" : "bg-gray-100"
+    }`}>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+          <h1 className={`text-2xl sm:text-3xl font-bold ${mode === "dark" ? "text-white" : "text-gray-800"}`}>
             User Management
           </h1>
         </div>
@@ -64,27 +68,43 @@ export default function UsersPage() {
 
         {!loading && !error && (
           <>
-            <div className="hidden md:block bg-white shadow-xl rounded-2xl">
+            <div className={`hidden md:block shadow-xl rounded-2xl ${
+              mode === "dark" ? "bg-gray-800" : "bg-white"
+            }`}>
               <div className="overflow-x-auto max-h-[70vh] overflow-y-auto">
                 <table className="min-w-full text-sm text-left">
-                  <thead className="bg-gray-50 border-b sticky top-0 z-10">
+                  <thead className={`border-b sticky top-0 z-10 ${
+                    mode === "dark" ? "bg-gray-700" : "bg-gray-50"
+                  }`}>
                     <tr>
-                      <th className="px-6 py-4 font-semibold text-gray-600">
+                      <th className={`px-6 py-4 font-semibold ${
+                        mode === "dark" ? "text-gray-300" : "text-gray-600"
+                      }`}>
                         Sr No
                       </th>
-                      <th className="px-6 py-4 font-semibold text-gray-600">
+                      <th className={`px-6 py-4 font-semibold ${
+                        mode === "dark" ? "text-gray-300" : "text-gray-600"
+                      }`}>
                         Name
                       </th>
-                      <th className="px-6 py-4 font-semibold text-gray-600">
+                      <th className={`px-6 py-4 font-semibold ${
+                        mode === "dark" ? "text-gray-300" : "text-gray-600"
+                      }`}>
                         Email
                       </th>
-                      <th className="px-6 py-4 font-semibold text-gray-600">
+                      <th className={`px-6 py-4 font-semibold ${
+                        mode === "dark" ? "text-gray-300" : "text-gray-600"
+                      }`}>
                         Role
                       </th>
-                      <th className="px-6 py-4 font-semibold text-gray-600">
+                      <th className={`px-6 py-4 font-semibold ${
+                        mode === "dark" ? "text-gray-300" : "text-gray-600"
+                      }`}>
                         Subsription
                       </th>
-                      <th className="px-6 py-4 font-semibold text-gray-600">
+                      <th className={`px-6 py-4 font-semibold ${
+                        mode === "dark" ? "text-gray-300" : "text-gray-600"
+                      }`}>
                         Actions
                       </th>
                     </tr>
@@ -94,17 +114,27 @@ export default function UsersPage() {
                     {users.map((user, i) => (
                       <tr
                         key={user._id}
-                        className="border-b hover:bg-gray-50 transition"
+                        className={`border-b transition ${
+                          mode === "dark" 
+                            ? "border-gray-700 hover:bg-gray-700" 
+                            : "hover:bg-gray-50"
+                        }`}
                       >
-                        <td className="px-6 py-4 text-gray-500">
+                        <td className={`px-6 py-4 ${
+                          mode === "dark" ? "text-gray-400" : "text-gray-500"
+                        }`}>
                           {(page - 1) * limit + i + 1}
                         </td>
 
-                        <td className="px-6 py-4 font-medium text-gray-800">
+                        <td className={`px-6 py-4 font-medium ${
+                          mode === "dark" ? "text-white" : "text-gray-800"
+                        }`}>
                           {user.name}
                         </td>
 
-                        <td className="px-6 py-4 text-gray-600">
+                        <td className={`px-6 py-4 ${
+                          mode === "dark" ? "text-white" : "text-gray-600"
+                        }`}>
                           {user.email}
                         </td>
 
@@ -135,7 +165,7 @@ export default function UsersPage() {
                         <td className="px-6 py-4">
                           <button
                             onClick={() => handleViewHistory(user._id)}
-                            className="px-3 py-1 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                            className="cursor-pointer px-3 py-1 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                           >
                             View History
                           </button>
@@ -145,7 +175,9 @@ export default function UsersPage() {
                   </tbody>
                 </table>
               </div>
-                <div className="p-4 border-t bg-gray-50 rounded-b-2xl">
+                <div className={`p-4 border-t rounded-b-2xl ${
+                  mode === "dark" ? "bg-gray-700 border-gray-600" : "bg-gray-50"
+                }`}>
                   <Pagination
                     currentPage={pagination.page}
                     totalPages={pagination.totalPages}
@@ -165,10 +197,14 @@ export default function UsersPage() {
               {users.map((user, i) => (
                 <div
                   key={user._id}
-                  className="bg-white shadow-md rounded-xl p-4"
+                  className={`shadow-md rounded-xl p-4 ${
+                    mode === "dark" ? "bg-gray-800" : "bg-white"
+                  }`}
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="font-semibold text-gray-800">
+                    <h2 className={`font-semibold ${
+                      mode === "dark" ? "text-white" : "text-gray-800"
+                    }`}>
                       {(page - 1) * limit + i + 1}. {user.name}
                     </h2>
 
@@ -183,7 +219,9 @@ export default function UsersPage() {
                     </span>
                   </div>
 
-                  <p className="text-sm text-gray-600 break-all">
+                  <p className={`text-sm break-all ${
+                    mode === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}>
                     {user.email}
                   </p>
 

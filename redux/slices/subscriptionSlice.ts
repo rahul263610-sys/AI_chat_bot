@@ -69,8 +69,8 @@ export const upgradePlan = createAsyncThunk(
         return rejectWithValue(data.message);
       }
 
-      window.location.href = data.paymentUrl;
-      // window.location.href = data.url;
+      // window.location.href = data.paymentUrl;
+      window.location.href = data.url;
 
     } catch (error: any) {
       return rejectWithValue(error.message);

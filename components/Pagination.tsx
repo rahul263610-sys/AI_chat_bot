@@ -1,5 +1,6 @@
 "use client";
 
+import { useMode } from "@/hooks/useMode";
 import React from "react";
 
 interface PaginationProps {
@@ -23,6 +24,7 @@ export default function Pagination({
   currentLimit = 10,
   onLimitChange,
 }: PaginationProps) {
+  const mode = useMode();
   const generatePageNumbers = () => {
     const pages: (number | string)[] = [];
     const maxVisible = 5;
@@ -63,7 +65,7 @@ export default function Pagination({
           <button
             onClick={() => onPageChange(Math.max(1, currentPage - 1))}
             disabled={!hasPrev || loading}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="cursor-pointer px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             ← Previous
           </button>
@@ -90,22 +92,22 @@ export default function Pagination({
           <button
             onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
             disabled={!hasNext || loading}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="cursor-pointer px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Next →
           </button>
         </>
       <div className="flex items-center gap-4 ml-0 sm:ml-4">
-        <span className="text-sm text-gray-600">Page {currentPage} of {totalPages}</span>
+        <span className={`text-sm ${mode==="dark" ? "text-white": "text-gray-600"}`}>Page {currentPage} of {totalPages}</span>
 
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600">Per page</label>
+          <label className={`text-sm ${mode==="dark" ? "text-white": "text-gray-600"}`}>Per page</label>
           <select
             aria-label="Select items per page"
             value={currentLimit ?? 10}
             onChange={(e) => onLimitChange?.(parseInt(e.target.value, 10))}
             disabled={loading}
-            className="ml-1 px-3 py-1 border rounded-lg text-sm bg-white text-gray-700 focus:outline-none"
+            className="ml-1 px-3 py-1 border rounded-lg text-sm bg-white text-gray-700 focus:outline-none cursor-pointer"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>

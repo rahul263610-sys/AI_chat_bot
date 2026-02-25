@@ -6,7 +6,7 @@ import { useState } from "react";
 import Loader from "@/components/ui/Loader";
 
 export default function SuccessPage() {
-  const [success, setSuccess]= useState(false);
+  const [success, setSuccess]= useState(true);
   const router = useRouter();
   const paycool_id= process.env.PAYCOOL_ID;
   console.log("paycool_id", paycool_id)

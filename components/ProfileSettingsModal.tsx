@@ -111,7 +111,7 @@ export default function ProfileSettingsModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              className={`cursor-pointer px-4 py-2 rounded-lg text-sm font-medium transition ${
                 mode === "dark"
                   ? "bg-gray-800 text-gray-200 hover:bg-gray-700"
                   : "bg-gray-200 text-gray-800 hover:bg-gray-300"
@@ -122,7 +122,7 @@ export default function ProfileSettingsModal({
             <button
               type="submit"
               disabled={loading}
-              className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition bg-blue-600 hover:bg-blue-700 disabled:opacity-50`}
+              className={`cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-white transition bg-blue-600 hover:bg-blue-700 disabled:opacity-50`}
             >
               {loading ? "Saving..." : "Save"}
             </button>

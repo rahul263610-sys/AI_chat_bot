@@ -20,7 +20,7 @@ export default function HistoryModal({ open, onClose, chats, loading, onViewQues
         <div className="flex justify-between items-center px-6 py-4 border-b bg-gray-50">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Chat History</h2>
 
-          <button onClick={onClose} className="text-gray-500 hover:text-red-600 text-lg font-bold">
+          <button onClick={onClose} className="text-gray-500 hover:text-red-600 text-lg font-bold cursor-pointer">
             ✕
           </button>
         </div>
@@ -51,7 +51,7 @@ export default function HistoryModal({ open, onClose, chats, loading, onViewQues
                     <td className="px-4 py-3 border text-gray-800 max-w-[28ch]"><div className="truncate" title={chat.userId?.email}>{chat.userId?.email}</div></td>
                     <td className="px-4 py-3 border text-gray-800">{new Date(chat.createdAt).toLocaleString()}</td>
                     <td className="px-4 py-3 border">
-                      <button onClick={() => onViewQuestions(chat._id)} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">View Questions</button>
+                      <button onClick={() => onViewQuestions(chat._id)} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer">View Questions</button>
                     </td>
                   </tr>
                 ))}
@@ -61,7 +61,7 @@ export default function HistoryModal({ open, onClose, chats, loading, onViewQues
         </div>
 
         <div className="px-6 py-3 border-t bg-gray-50 flex justify-end">
-          <button onClick={onClose} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Close</button>
+          <button onClick={onClose} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer">Close</button>
         </div>
       </div>
     </div>
