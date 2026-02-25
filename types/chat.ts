@@ -7,4 +7,6 @@ export interface Chat {
   _id: string;
   title: string;
   messages: Message[];
+  status : boolean;
+  remaining:number;
 }

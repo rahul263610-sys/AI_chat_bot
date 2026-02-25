@@ -14,7 +14,6 @@ export default function LoginPage() {
   const { user, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
-
   const [isSignup, setIsSignup] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -85,7 +84,8 @@ export default function LoginPage() {
         isLoading: false,
         autoClose: 3000,
       });
-      setIsSignup(false);
+      await dispatch(loginUser({ email, password })).unwrap();
+      router.replace("/choose-plan");
       setPassword("");
       setConfirmPassword("");
     } catch (err: any) {
@@ -103,6 +103,16 @@ export default function LoginPage() {
     }
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      await dispatch(getCurrentUser());
+    };
+    fetchUser();
+    if (user) {
+      router.replace(user.role === "Admin" ? "/admin/dashboard" : "/chat");
+    }
+  }, [user, router]);
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 bg-white rounded-xl shadow-lg overflow-hidden">

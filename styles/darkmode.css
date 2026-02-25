@@ -1,0 +1,34 @@
+.theme-switcher {
+  width: 60px;
+  height: 30px;
+  background: #e5e7eb;
+  border-radius: 50px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border: none;
+}
+
+.theme-switcher.dark {
+  background: #1f2937;
+}
+
+.switch-circle {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.theme-switcher.dark .switch-circle {
+  transform: translateX(30px);
+  background: #111827;
+  color: white;
+}

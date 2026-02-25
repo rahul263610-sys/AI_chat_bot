@@ -6,7 +6,13 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api")) {
-    const allowedOrigins = ["https://ai-chat-bot-sigma-seven.vercel.app"];
+    const allowedOrigins = [
+    "https://ai-chat-bot-sigma-seven.vercel.app",
+    "http://localhost:3000",
+    "https://hoseless-municipally-jennifer.ngrok-free.dev",
+    "https://paycoolbackend.onrender.com"
+  ];
+
     const origin = request.headers.get("origin");
     const response = NextResponse.next();
     if (origin && allowedOrigins.includes(origin)) {
@@ -31,11 +37,12 @@ export async function middleware(request: NextRequest) {
 
   const token = request.cookies.get("token")?.value;
 
+  if (!token) return NextResponse.redirect(new URL("/login", request.url));
+  
   if (pathname.startsWith("/login") || (!pathname.startsWith("/admin") && !pathname.startsWith("/chat"))) {
     return NextResponse.next();
   }
 
-  if (!token) return NextResponse.redirect(new URL("/login", request.url));
 
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET!));
@@ -56,5 +63,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/admin/:path*", "/chat/:path*"],
+  matcher: ["/api/:path*", "/admin/:path*", "/chat/:path*", "/choose-plan/:path*"],
 };

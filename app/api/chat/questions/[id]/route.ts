@@ -18,7 +18,6 @@ export async function GET(
     return NextResponse.json({ error: "Chat not found" }, { status: 404 });
   }
 
-  // ✅ Only user messages
   const userMessages = chat.messages.filter(
     (msg: any) => msg.role === "user"
   );

@@ -5,45 +5,53 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "@/redux/store";
-import { fetchChats, setActiveChat, createChat } from "@/redux/slices/chatSlice";
+import { fetchChats, createChat } from "@/redux/slices/chatSlice";
 import { getCurrentUser } from "@/redux/slices/authSlice";
 import { useRole } from "@/hooks/useRole";
+import { useMode } from "@/hooks/useMode";
 import Loader from "@/components/ui/Loader";
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+import { fetchSubscription } from "@/redux/slices/subscriptionSlice";
+export default function UserLayout({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
   const { chats, activeChat } = useSelector((state: RootState) => state.chat);
   const role = useRole();
+  const mode = useMode();
   const [isOpen, setIsOpen] = useState(false);
-
   useEffect(() => {
     const mobile = typeof window !== "undefined" && window.innerWidth <= 962;
     setIsOpen(!mobile);
   }, []);
 
   useEffect(() => {
+    dispatch(fetchSubscription());
     dispatch(fetchChats());
     dispatch(getCurrentUser());
   }, [dispatch]);
+
   if(!role){
     return <Loader />
   }
+
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-black text-white">
-      <Header isOpen={isOpen} setIsOpen={setIsOpen} createChat={() => dispatch(createChat())}/>
+  <div className={`h-screen flex flex-col overflow-hidden ${mode === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
+    <Header
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      createChat={() => dispatch(createChat())}
+    />
 
-      <div className="flex flex-1 overflow-hidden pt-14">
-        <Sidebar
-          chats={chats}
-          activeChat={activeChat}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
+    <div className="flex flex-1 overflow-hidden pt-14">
+      <Sidebar
+        chats={chats}
+        activeChat={activeChat}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
 
-        <main className="flex-1 min-w-0 overflow-auto">
-          {children}
-        </main>
-      </div>
+      <main className="flex-1 min-w-0 overflow-auto">
+        {children}
+      </main>
     </div>
-  );
+  </div>
+);
 }

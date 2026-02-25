@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/redux/store";
+import { getCurrentUser } from "@/redux/slices/authSlice";
 
 export default function Home() {
   const router = useRouter();
@@ -12,6 +15,14 @@ export default function Home() {
   );
 
   const [mounted, setMounted] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      await dispatch(getCurrentUser());
+  };
+    fetchUser();
+  }, [dispatch]);
 
   useEffect(() => {
     setMounted(true);
@@ -27,6 +38,7 @@ export default function Home() {
       router.replace("/chat");
     }
   }, [user, mounted, router]);
+
 
   return null;
 }

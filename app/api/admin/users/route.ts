@@ -12,7 +12,11 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .limit(5)
       .select("name role createdAt")
-      .lean();
+      .lean()
+      .populate({
+        path: "subscription",
+        select: "plan -_id",
+      });
 
     return NextResponse.json({ users });
   } catch (err: any) {

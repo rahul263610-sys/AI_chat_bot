@@ -50,7 +50,10 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-
+  const capitalize = (str?: string) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-6 sm:p-6 md:p-8">
       <div className="mb-8">
@@ -185,13 +188,14 @@ export default function DashboardPage() {
                   </div>
 
                   <div
-                    className={`text-xs font-medium px-3 py-1 rounded-full self-start sm:self-auto ${
-                      u.role === "Admin"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-emerald-100 text-emerald-700"
-                    }`}
-                  >
-                    {u.role}
+                   className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              u.subscription?.plan === "premium"
+                                ? "bg-green-100 text-green-700"
+                                : u.subscription?.plan==="free" ? "bg-blue-100 text-blue-700"
+                                : "bg-red-100 text-red-500"
+                            }`}
+                          >
+                           {capitalize(u.subscription?.plan)}
                   </div>
                 </li>
               ))}

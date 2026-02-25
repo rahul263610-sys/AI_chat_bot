@@ -2,8 +2,14 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axios";
 import type { Chat, Message } from "@/types/chat";
 
+interface UsageCheck {
+  allowed: boolean;
+  remaining: number;
+  message: string;
+}
 interface ChatState {
   chats: Chat[];
+  remaining: number | null;
   activeChat: Chat | null;
 
   questions: Message[];
@@ -17,6 +23,7 @@ interface ChatState {
 
 const initialState: ChatState = {
   chats: [],
+  remaining: null,
   activeChat: null,
 
   questions: [],
@@ -60,21 +67,36 @@ export const sendMessage = createAsyncThunk(
 );
 
 
-export const fetchSingleChat = createAsyncThunk(
-  "chat/fetchSingleChat",
-  async (chatId: string) => {
-    const res = await axiosInstance.get(`/chat/${chatId}`);
-    return res.data;
-  }
-);
+export const fetchSingleChat = createAsyncThunk<
+  { chat: Chat; usageCheck: UsageCheck },
+  string
+>("chat/fetchSingleChat", async (chatId) => {
+  const res = await axiosInstance.get(`/chat/${chatId}`);
+  return res.data;
+});
 
 export const fetchChatQuestions = createAsyncThunk(
   "chat/fetchChatQuestions",
   async (chatId: string) => {
     const res = await axiosInstance.get(`/chat/questions/${chatId}`);
     return res.data; 
-    // expected response:
-    // { title: string, questions: Message[] }
+  }
+);
+
+export const deleteChat = createAsyncThunk(
+  "chat/deleteChat",
+  async (chatId: string, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(
+        `/chat/delete/${chatId}`
+      );
+
+      return chatId;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Delete failed"
+      );
+    }
   }
 );
 
@@ -121,18 +143,17 @@ const chatSlice = createSlice({
         );
 
         state.activeChat = updatedChat;
+        state.remaining= action.payload.usageCheck.remaining;
       })
 
       .addCase(fetchSingleChat.pending, (state) => {
         state.loading = true;
       })
-      .addCase(
-        fetchSingleChat.fulfilled,
-        (state, action: PayloadAction<Chat>) => {
-          state.loading = false;
-          state.activeChat = action.payload;
-        }
-      )
+      .addCase(fetchSingleChat.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activeChat = action.payload.chat;
+        state.remaining = action.payload.usageCheck.remaining;
+      })
       .addCase(fetchSingleChat.rejected, (state) => {
         state.loading = false;
       })
@@ -153,6 +174,15 @@ const chatSlice = createSlice({
       )
       .addCase(fetchChatQuestions.rejected, (state) => {
         state.questionLoading = false;
+      })
+      .addCase(deleteChat.fulfilled, (state, action) => {
+        state.chats = state.chats.filter(
+          (chat) => chat._id !== action.payload
+        );
+
+        if (state.activeChat?._id === action.payload) {
+          state.activeChat = null;
+        }
       });
   },
 });

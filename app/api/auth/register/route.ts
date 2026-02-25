@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import User from "@/models/User";
+import  Subscription from "@/models/SubscriptionModel"
 import { connectDB } from "@/lib/mongodb";
 
 export async function POST(req : Request){
@@ -29,6 +30,14 @@ export async function POST(req : Request){
             password : hashPassword, 
             role: role || "User",
         })
+       const subscription =  await Subscription.create({
+            user: newUser._id,
+            plan: "null",
+            status: "pending",
+        })
+
+        newUser.subscription = subscription._id;
+        await newUser.save();
 
         return NextResponse.json({
             message : "User created successfully",

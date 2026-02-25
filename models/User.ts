@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
             enum : ["User", "Admin"],
             default : "User",
         },
+        subscription: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Subscription",
+        },
     }, {timestamps :  true}
 )
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AiOutlineLogout, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlineSetting,AiOutlineRocket  } from "react-icons/ai";
 import Dropdown from "@/components/Dropdown";
 import ProfileSettingsModal from "@/components/ProfileSettingsModal";
 import { useDispatch } from "react-redux";
@@ -11,18 +11,22 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { clearChats } from "@/redux/slices/chatSlice";
 import { useAuth } from "@/hooks/useAuth";
+import { useMode } from "@/hooks/useMode";
 import type { User } from "@/types/user";
+import { useSubscription } from "@/hooks/useSubscription";
 interface UserProfileDropdownProps {
   isSidebarOpen: boolean;
 }
 export default function UserProfileDropdownn({ isSidebarOpen }: UserProfileDropdownProps) {
   const user = useAuth();
+  const {isFree, isPremium} = useSubscription();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [userData, setUserData] = useState<User | null>(user);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const mode = useMode();
 
   useEffect(() => {
     if (user) {
@@ -58,7 +62,16 @@ export default function UserProfileDropdownn({ isSidebarOpen }: UserProfileDropd
     }
   };
 
+  const showSubscritionPage = ()=>{
+    router.replace("/choose-plan");
+  }
   const dropdownItems = [
+    {
+      id: "choose-plan",
+      label: "Upgrade Plan",
+      icon: <AiOutlineRocket size={16} />,
+      onClick: () => showSubscritionPage(),
+    },
     {
       id: "settings",
       label: "Settings",
@@ -78,31 +91,31 @@ export default function UserProfileDropdownn({ isSidebarOpen }: UserProfileDropd
 
   const userInitial = (userData?.name || user?.name)?.[0]?.toUpperCase() || "U";
   const displayName = userData?.name || user?.name || "User";
-  const displayRole = userData?.role || user?.role || "User";
+  const plan = isFree ? "Free" : isPremium ? "Premium" : "Null";
 
   return (
     <div className="relative">
       <button
         onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="w-full p-3 rounded-lg transition hover:bg-gray-800 flex items-center gap-3"
+        className={`cursor-pointer w-full p-3 rounded-lg transition flex items-center gap-3 ${mode === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-200"}`}
       >
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
           {userInitial}
         </div>
           <div className="min-w-0 flex-1 text-left">
-            <div className="text-sm font-medium text-white truncate">
+            <div className={`text-sm font-medium truncate ${mode === "dark" ? "text-white" : "text-black"}`}>
               {displayName}
             </div>
-            <div className="text-xs text-gray-400 truncate">{displayRole}</div>
+            <div className={`text-xs truncate ${mode === "dark" ? "text-gray-400" : "text-gray-500"}`}>{plan}</div>
           </div>
       </button>
        <Dropdown
-            isOpen={dropdownOpen}
-            onClose={() => setDropdownOpen(false)}
-            items={dropdownItems}
-            position="left"
-            align="top"
-            sidebarOpen={isSidebarOpen} 
+          isOpen={dropdownOpen}
+          onClose={() => setDropdownOpen(false)}
+          items={dropdownItems}
+          position="left"
+          align="top"
+          sidebarOpen={isSidebarOpen} 
        />
       <ProfileSettingsModal
         isOpen={profileModalOpen}

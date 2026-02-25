@@ -2,23 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { spawn } from "child_process";
 import { connectDB } from "@/lib/mongodb";
 import Chat from "@/models/Chat";
-import Jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-import { authorizeRole } from "@/lib/auth";
+import { authorizeRole, getCurrentUserDetails } from "@/lib/auth";
+import { checkAndIncrementUsage, checkUsage } from "@/lib/checkUsage";
 
-// GET chat by id
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // ✅ Authorize Admin or User
     await connectDB();
     const auth = await authorizeRole(["Admin", "User"]);
     if ("error" in auth) return auth.error;
-
-
-     const { id } = await params;
+    const usageCheck = await checkUsage(auth.user.id);
+    const { id } = await params;
 
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
       return NextResponse.json(
@@ -35,7 +31,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(chat);
+    return NextResponse.json({chat, usageCheck});
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Server error" },
@@ -51,9 +47,23 @@ export async function POST(
 ) {
   try {
     await connectDB();
-    const auth = await authorizeRole(["Admin", "User"]);
-      if ("error" in auth) return auth.error;
+    // const auth = await authorizeRole(["Admin", "User"]);
+    //   if ("error" in auth) return auth.error;
     const { id } = await context.params;
+    const user= await getCurrentUserDetails();
+    if (!user || !user._id) {
+      return Response.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+    const usageCheck = await checkAndIncrementUsage(user._id);
+    if (!usageCheck.allowed) {
+      return Response.json({
+        usageCheck,
+      }, { status: 403 });
+    }
+    usageCheck.remaining--;
     const { message } = await req.json();
     const chat = await Chat.findById(id);
     if (!chat) {
@@ -105,6 +115,7 @@ export async function POST(
         NextResponse.json({
           response: stdout.trim(),
           chat,
+          usageCheck
         })
       );
 

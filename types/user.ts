@@ -5,7 +5,11 @@ export interface User {
   name?: string;
   email?: string;
   role: Role;
+   subscription?: {
+    plan: string;
+  } | null;
 }
+
 
 export interface AuthUser {
   id: string;

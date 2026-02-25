@@ -20,7 +20,11 @@ export async function GET(req: Request) {
       .select("-password")
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "subscription",
+        select: "plan -_id",
+      });
 
     const totalPages = Math.ceil(total / limit);
 

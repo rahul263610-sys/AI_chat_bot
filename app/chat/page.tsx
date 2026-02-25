@@ -6,14 +6,24 @@ import ChatInput from "@/components/ChatInput";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "@/redux/store";
 import { sendMessage, createChat } from "@/redux/slices/chatSlice";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useRouter } from "next/navigation";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 export default function ChatPage() {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { activeChat } = useSelector((state: RootState) => state.chat);
   const [showLimitModal, setShowLimitModal] = useState(false);
-
+  const {subscription, isPending} = useSubscription();
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(()=>{
+    if(isPending){
+      router.replace("/choose-plan");
+    }
+  }, [router]);
 
   useEffect(() => {
     if (activeChat && activeChat?.messages?.length >= 20) {
@@ -33,11 +43,15 @@ export default function ChatPage() {
       chatId = newChat._id; 
     }
     await dispatch(sendMessage({ chatId, message: input }));
-
+    
     setInput("");
     setLoading(false);
   };
 
+  const createNewChat = async()=>{
+      await dispatch(createChat()).unwrap();
+      setShowLimitModal(false);
+  }
   return (
    <div className="flex flex-col h-full min-h-0"> 
       <ChatWindow activeChat={activeChat} />
@@ -50,39 +64,16 @@ export default function ChatPage() {
           activeChat={activeChat}
         />
       </div>
-      {showLimitModal && (
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-       <div className="bg-gray-900 p-6 rounded-xl w-[90%] max-w-md text-center space-y-4 mx-4">
-          <h2 className="text-xl font-bold">
-            Message Limit Reached
-          </h2>
-
-          <p className="text-gray-400 text-sm">
-            You’ve reached the message limit for this chat.
-            Please create a new chat to continue.
-          </p>
-
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={async () => {
-                const res = await dispatch(createChat()).unwrap();
-                setShowLimitModal(false);
-              }}
-              className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              Create New Chat
-            </button>
-
-            <button
-              onClick={() => setShowLimitModal(false)}
-              className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
+      <ConfirmModal
+        isOpen={showLimitModal} 
+        title="Message Limit Reached"
+        description=" You’ve reached the message limit for this chat. Please create a new chat to continue."
+        confirmText="Create New Chat"
+        cancelText="Cancel"
+        onConfirm={createNewChat}
+        onCancel={()=>setShowLimitModal(false)}
+        variant="default"
+      />
     </div>
   );
 }

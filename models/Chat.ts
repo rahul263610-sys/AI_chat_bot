@@ -30,6 +30,10 @@ const chatSchema = new mongoose.Schema(
       type: [messageSchema],
       default: [],  
     },
+    status : {
+      type: Boolean,
+      default : true,
+    },
   },
   { timestamps: true }
 );

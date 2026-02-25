@@ -2,6 +2,8 @@
 
 import { Menu } from "lucide-react";
 import { useRole } from "@/hooks/useRole";
+import { useMode } from "@/hooks/useMode";
+import DarkModeSwitcher from "@/components/DarkModeSwitcher";
 interface HeaderProps {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
@@ -10,14 +12,13 @@ interface HeaderProps {
 
 export default function Header({ isOpen, setIsOpen,createChat = () => {}, }: HeaderProps) {
   const role = useRole();
+  const mode = useMode();
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-gray-800 bg-black flex items-center px-4 justify-between">
-      
-      {/* Left Section */}
+    <div className={`fixed top-0 left-0 right-0 z-50 h-14 border-b flex items-center px-4 justify-between ${mode === "dark" ? "border-gray-800 bg-black text-white" : "border-gray-200 bg-white text-black"}`}>
       <div className="flex items-center gap-3">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded-lg hover:bg-gray-800 transition cursor-pointer"
+          className={`p-2 rounded-lg transition cursor-pointer ${mode === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-200"}`}
         >
           <Menu size={20} />
         </button>
@@ -36,9 +37,12 @@ export default function Header({ isOpen, setIsOpen,createChat = () => {}, }: Hea
         )}
       </div>
 
-      {/* Right Section */}
-      <div className="text-sm text-gray-400">
-        Powered by OpenAI
+      <div className="flex items-center gap-3">
+        <DarkModeSwitcher />
+
+        <div className={`text-sm ${mode === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+            Powered by OpenAI
+        </div>
       </div>
     </div>
   );

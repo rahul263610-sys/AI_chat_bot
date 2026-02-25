@@ -30,7 +30,6 @@ export default function UsersPage() {
   const { questions, questionTitle, questionLoading } = useSelector(
     (state: RootState) => state.chat
   );
-
   const [historyModal, setHistoryModal] = useState(false);
   const [questionModal, setQuestionModal] = useState(false);
 
@@ -42,17 +41,10 @@ export default function UsersPage() {
     dispatch(fetchUserHistory(id));
     setHistoryModal(true);
   };
-
-  const closeModal = () => {
-    setHistoryModal(false);
-    dispatch(clearHistory());
+  const capitalize = (str?: string) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
-
-  const handleViewQuestions = (chatId: string) => {
-    dispatch(fetchChatQuestions(chatId));
-    setQuestionModal(true);
-  };
-
   return (
     <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -72,7 +64,6 @@ export default function UsersPage() {
 
         {!loading && !error && (
           <>
-            {/* Desktop Table */}
             <div className="hidden md:block bg-white shadow-xl rounded-2xl">
               <div className="overflow-x-auto max-h-[70vh] overflow-y-auto">
                 <table className="min-w-full text-sm text-left">
@@ -89,6 +80,9 @@ export default function UsersPage() {
                       </th>
                       <th className="px-6 py-4 font-semibold text-gray-600">
                         Role
+                      </th>
+                      <th className="px-6 py-4 font-semibold text-gray-600">
+                        Subsription
                       </th>
                       <th className="px-6 py-4 font-semibold text-gray-600">
                         Actions
@@ -123,6 +117,18 @@ export default function UsersPage() {
                             }`}
                           >
                             {user.role}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              user.subscription?.plan === "premium"
+                                ? "bg-green-100 text-green-700"
+                                : user.subscription?.plan==="free" ? "bg-blue-100 text-blue-700"
+                                : "bg-red-100 text-red-500"
+                            }`}
+                          >
+                           {capitalize(user.subscription?.plan)}
                           </span>
                         </td>
 

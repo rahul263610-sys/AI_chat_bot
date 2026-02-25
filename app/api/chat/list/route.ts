@@ -8,6 +8,6 @@ export async function GET(){
     const auth = await authorizeRole(["Admin", "User"]);
     const user = auth.user;
     if ("error" in auth) return auth.error;
-    const chats = await Chat.find({ userId: user?.id }).sort({ updatedAt: -1 });
+    const chats = await Chat.find({ userId: user?.id, status: true }).sort({ updatedAt: -1 });
     return NextResponse.json(chats);
 }
